@@ -6,6 +6,7 @@ from database import db_post
 import string
 import random
 import shutil
+import os
 router = APIRouter(
 
     prefix='/post',
@@ -24,14 +25,17 @@ def posts(db:Session=Depends(get_db)):
 def delete(id:int, db: Session=Depends(get_db)):
     return db_post.delete(id,db)
 @router.post('/image')
-def upload_image(image: UploadFile=File(...)):
-    letter=string.ascii_letters
-    rand_str=''.join(random.choice(letter) for i in range(6))
-    new=f'_{rand_str}.'
-    filename=new.join(image.filename.rsplit('.',1))
-    path=f'images/{filename}'
+def upload_image(image: UploadFile = File(...)):
+    if not os.path.exists('images'):
+        os.makedirs('images')
 
-    with open(path,'w+b') as buffer:
-        shutil.copyfileobj(image.file,buffer)
+    letter = string.ascii_letters
+    rand_str = ''.join(random.choice(letter) for i in range(6))
+    new = f'_{rand_str}.'
+    filename = new.join(image.filename.rsplit('.', 1))
+    path = f'images/{filename}'
 
-    return {'filename':path}
+    with open(path, 'wb+') as buffer:
+        shutil.copyfileobj(image.file, buffer)
+
+    return {'filename': path}
