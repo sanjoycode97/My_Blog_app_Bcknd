@@ -16,7 +16,7 @@ models.Base.metadata.create_all(engine)
 app.mount('/images',StaticFiles(directory='images'),name='images')
 
 origins= [
-    'https://my-blog-app-front-chi.vercel.app/'
+    'https://my-blog-app-front-chi.vercel.app'
 ]
 
 app.add_middleware(
